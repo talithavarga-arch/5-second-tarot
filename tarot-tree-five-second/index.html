@@ -231,8 +231,18 @@
 
         try {
             // 5. Call the Gemini API
-            const interpretation = await callGeminiAPI(prompt);
-
+            // Replace callGeminiAPI with:
+async function callGeminiAPI(promptText) {
+  const r = await fetch("/api/gemini", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: promptText })
+  });
+  if (!r.ok) throw new Error(await r.text());
+  const data = await r.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  return text || "Could not generate an interpretation at this time. Please try again.";
+}
             // 6. Flip cards and display the interpretation
             flipCards(selectedCards);
             setTimeout(() => {
